@@ -113,7 +113,12 @@ export async function updateMetaDataAction(req: Request, res: Response) {
         ...data,
         attributes
     }));
-    let newUri = await arweaveUpload(walletKeyPair, connection, ENV, metadataBuffer);
+    let newUri = '';
+    try {
+        newUri = await arweaveUpload(walletKeyPair, connection, ENV, metadataBuffer)
+    } catch (e: any) {
+        return res.json("");
+    }
     let updatedMetadata = {
         ...metadataDecoded.data,
         uri: newUri,
