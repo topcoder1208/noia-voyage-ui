@@ -64,6 +64,8 @@ export async function arweaveUpload(
   const estimatedManifestSize = estimateManifestSize([
     'metadata.json',
   ]);
+  console.log("metadataBuffer.length: ", metadataBuffer.length);
+
   const storageCost = await fetchAssetCostToStore([
     metadataBuffer.length,
     estimatedManifestSize,
