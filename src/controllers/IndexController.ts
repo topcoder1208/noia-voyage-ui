@@ -10,7 +10,7 @@ import {
     PublicKey,
 } from '@solana/web3.js';
 import { Request, Response } from "express";
-import { updateMetadata } from "../actions";
+import { Data, updateMetadata } from "../actions";
 import { Program, Provider, Wallet } from "@project-serum/anchor";
 import axios from 'axios';
 import path, { dirname } from "path";
@@ -119,12 +119,12 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     } catch (e: any) {
         return res.json("");
     }
-    let updatedMetadata = {
+    let updatedMetadata = new Data({
         ...metadataDecoded.data,
         uri: newUri,
         name: metadataDecoded.data.name.replace(/\x00/g, ''),
         symbol: metadataDecoded.data.symbol.replace(/\x00/g, ''),
-    }
+    })
     const instructions: TransactionInstruction[] = [];
     await updateMetadata(
         updatedMetadata,

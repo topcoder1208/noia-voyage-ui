@@ -526,8 +526,6 @@ export async function updateMetadata(
         ? null
         : primarySaleHappened,
   });
-  console.log(value)
-  console.log(METADATA_SCHEMA)
   const txnData = Buffer.from(serialize(METADATA_SCHEMA, value));
   const keys = [
     {
