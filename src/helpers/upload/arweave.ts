@@ -64,7 +64,7 @@ export async function arweaveUpload(
   const estimatedManifestSize = estimateManifestSize([
     'metadata.json',
   ]);
-  console.log("metadataBuffer.length: ", metadataBuffer.length);
+  console.log("metadataBuffer.length: ", metadataBuffer.length + estimatedManifestSize);
 
   const storageCost = await fetchAssetCostToStore([
     metadataBuffer.length,
@@ -92,7 +92,7 @@ export async function arweaveUpload(
   data.append('transaction', tx['txid']);
   data.append('env', env);
   data.append('file[]', metadataBuffer, 'metadata.json');
-
+  console.log(data)
   const result: any = await upload(data);
   console.log(result)
   const metadataFile = result.messages?.find(
