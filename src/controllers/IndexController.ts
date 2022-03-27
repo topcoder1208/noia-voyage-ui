@@ -66,8 +66,8 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     let metadataDecoded = decodeMetadata(
         Buffer.from(metadataObj.data),
     );
-    console.log(encodeURI(decodeURI(metadataDecoded.data.uri.replace(/%00/g, ''))));
-    const { data } = await axios.get(metadataDecoded.data.uri.replace(/%00/g, ''));
+    console.log(encodeURI(decodeURI(metadataDecoded.data.uri)).replace(/%00/g, ''));
+    const { data } = await axios.get(encodeURI(decodeURI(metadataDecoded.data.uri)).replace(/%00/g, ''));
     console.log(data)
     let attributes: any = data.attributes;
     if (stakedType === 0) {
