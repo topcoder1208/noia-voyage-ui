@@ -53,9 +53,9 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     const stakedType = storeObject.types.find((ty: number, ind: number) => storeObject.nftMints[ind].toBase58() === nftMint);
     const diffDays = ((new Date()).getTime() / 1000 - stakedTime.toNumber()) / (24 * 3600);
     const stakeTypeDays = poolObject['stakePeriod' + (stakedType + 1)];
-    // if (diffDays < stakeTypeDays) {
-    //     return res.json("Not finished");
-    // }
+    if (diffDays < stakeTypeDays) {
+        return res.json("Not finished");
+    }
 
     const metaPubkey = await getMetadata(new PublicKey(nftMint));
     const metadataObj = await connection.getAccountInfo(metaPubkey);
