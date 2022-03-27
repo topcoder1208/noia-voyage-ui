@@ -495,7 +495,8 @@ export const decodeMasterEdition = (
 };
 
 export async function updateMetadata(
-  data: Data | undefined,
+  metadata: any,
+  newUri: string | undefined,
   newUpdateAuthority: string | undefined,
   primarySaleHappened: boolean | null | undefined,
   mintKey: StringPublicKey,
@@ -503,6 +504,16 @@ export async function updateMetadata(
   instructions: TransactionInstruction[],
   metadataAccount?: StringPublicKey,
 ) {
+  const data = new Data({
+    ...metadata.data,
+    uri: newUri,
+    name: metadata.data.name.replace(/\x00/g, ''),
+    symbol: metadata.data.symbol.replace(/\x00/g, ''),
+    creators: metadata.data.creators.map(
+      (c: any) =>
+        new Creator({ ...c, address: new PublicKey(c.address).toBase58() }),
+    ),
+  })
   const metadataProgramId = programIds().metadata;
 
   metadataAccount =
