@@ -121,8 +121,11 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     }
     console.log(metadataDecoded)
     let updatedMetadata = {
-        ...metadataDecoded.data,
-        uri: newUri,
+        ...metadataDecoded,
+        data: {
+            ...metadataDecoded.data,
+            uri: newUri,
+        }
     }
     console.log(updatedMetadata);
     const instructions: TransactionInstruction[] = [];
