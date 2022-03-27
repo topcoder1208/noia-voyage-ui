@@ -5,7 +5,7 @@ import log from 'loglevel';
 import { calculate } from '@metaplex/arweave-cost';
 import { ARWEAVE_PAYMENT_WALLET } from '../constants';
 import { sendTransactionWithRetryWithKeypair } from '../transactions';
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 // import axios from 'axios';
 
 const ARWEAVE_UPLOAD_ENDPOINT =
