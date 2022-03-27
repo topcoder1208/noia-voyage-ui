@@ -60,10 +60,8 @@ export async function arweaveUpload(
   connection: anchor.web3.Connection,
   env: any,
   metadataBuffer: any,
-  ind: number,
 ) {
   const estimatedManifestSize = estimateManifestSize([
-    `${ind}.png`,
     'metadata.json',
   ]);
   console.log("metadataBuffer.length: ", metadataBuffer.length + estimatedManifestSize);
@@ -94,7 +92,7 @@ export async function arweaveUpload(
   data.append('transaction', tx['txid']);
   data.append('env', env);
   data.append('file[]', metadataBuffer, 'metadata.json');
-  console.log(data)
+
   const result: any = await upload(data);
   console.log(result)
   const metadataFile = result.messages?.find(
