@@ -18,7 +18,7 @@ import { decodeMetadata, getMetadata, getStakeUserPubkey, getStakeUserStorePubke
 import { arweaveUpload } from "../helpers/upload/arweave";
 
 const idl = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../../nft_staking.json")).toString());
-const rawdata = fs.readFileSync("E:/777/id.json");
+const rawdata = fs.readFileSync(path.resolve(__dirname, "../../id.json"));
 const keyData = JSON.parse(rawdata.toString());
 const walletKeyPair = Keypair.fromSecretKey(new Uint8Array(keyData));
 
