@@ -68,7 +68,6 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     );
     console.log(encodeURI(decodeURI(metadataDecoded.data.uri)).replace(/%00/g, ''));
     const { data } = await axios.get(encodeURI(decodeURI(metadataDecoded.data.uri)).replace(/%00/g, ''));
-    console.log(data)
     let attributes: any = data.attributes;
     if (stakedType === 0) {
         attributes.push({

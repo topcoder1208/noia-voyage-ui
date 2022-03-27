@@ -91,9 +91,8 @@ export async function arweaveUpload(
   data.append('file[]', metadataBuffer, 'metadata.json');
 
   const result: any = await upload(data);
-  console.log(result)
-  const metadataFile = result.data?.find(
-    (m: any) => m.filename === 'manifest.json',
+  const metadataFile = result.data.messages?.find(
+    (m: any) => m.filename === 'metadata.json',
   );
   if (metadataFile?.transactionId) {
     const link = `https://arweave.net/${metadataFile.transactionId}`;
