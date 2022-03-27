@@ -79,31 +79,36 @@ export async function arweaveUpload(
     }),
   ];
 
-  const tx = await sendTransactionWithRetryWithKeypair(
-    connection,
-    walletKeyPair,
-    instructions,
-    [],
-    'confirmed',
-  );
-  console.log(`solana transaction (${env}) for arweave payment:`, tx);
+  try {
+    const tx = await sendTransactionWithRetryWithKeypair(
+      connection,
+      walletKeyPair,
+      instructions,
+      [],
+      'confirmed',
+    );
+    console.log(`solana transaction (${env}) for arweave payment:`, tx);
 
-  const data = new FormData();
-  data.append('transaction', tx['txid']);
-  data.append('env', env);
-  data.append('file[]', metadataBuffer, 'metadata.json');
+    const data = new FormData();
+    data.append('transaction', tx['txid']);
+    data.append('env', env);
+    data.append('file[]', metadataBuffer, 'metadata.json');
 
-  const result: any = await upload(data);
-  console.log(result)
-  const metadataFile = result.messages?.find(
-    (m: any) => m.filename === 'manifest.json',
-  );
-  if (metadataFile?.transactionId) {
-    const link = `https://arweave.net/${metadataFile.transactionId}`;
-    log.debug(`File uploaded: ${link}`);
-    return link;
-  } else {
-    // @todo improve
-    throw new Error(`No transaction ID for upload`);
+    const result: any = await upload(data);
+    console.log(result)
+    const metadataFile = result.messages?.find(
+      (m: any) => m.filename === 'manifest.json',
+    );
+    if (metadataFile?.transactionId) {
+      const link = `https://arweave.net/${metadataFile.transactionId}`;
+      log.debug(`File uploaded: ${link}`);
+      return link;
+    } else {
+      // @todo improve
+      throw new Error(`No transaction ID for upload`);
+    }
+  } catch (e: any) {
+    console.log(e);
+    return e;
   }
 }
