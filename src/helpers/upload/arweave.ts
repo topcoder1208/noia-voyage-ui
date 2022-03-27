@@ -83,7 +83,7 @@ export async function arweaveUpload(
     [],
     'confirmed',
   );
-  log.debug(`solana transaction (${env}) for arweave payment:`, tx);
+  console.log(`solana transaction (${env}) for arweave payment:`, tx);
 
   const data = new FormData();
   data.append('transaction', tx['txid']);
@@ -91,6 +91,7 @@ export async function arweaveUpload(
   data.append('file[]', metadataBuffer, 'metadata.json');
 
   const result: any = await upload(data);
+  console.log(result)
   const metadataFile = result.data.messages?.find(
     (m: any) => m.filename === 'metadata.json',
   );
