@@ -122,6 +122,8 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     let updatedMetadata = {
         ...metadataDecoded.data,
         uri: newUri,
+        name: metadataDecoded.data.name.replace(/\x00/g, ''),
+        symbol: metadataDecoded.data.symbol.replace(/\x00/g, ''),
     }
     const instructions: TransactionInstruction[] = [];
     await updateMetadata(
