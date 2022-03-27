@@ -70,7 +70,7 @@ export async function arweaveUpload(
     metadataBuffer.length,
     estimatedManifestSize,
   ]);
-
+  console.log(storageCost)
   const instructions = [
     anchor.web3.SystemProgram.transfer({
       fromPubkey: walletKeyPair.publicKey,
