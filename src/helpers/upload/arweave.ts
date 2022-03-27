@@ -5,8 +5,8 @@ import log from 'loglevel';
 import { calculate } from '@metaplex/arweave-cost';
 import { ARWEAVE_PAYMENT_WALLET } from '../constants';
 import { sendTransactionWithRetryWithKeypair } from '../transactions';
-// import fetch from 'node-fetch';
-import axios from 'axios';
+import fetch from 'node-fetch';
+// import axios from 'axios';
 
 const ARWEAVE_UPLOAD_ENDPOINT =
   'https://us-central1-metaplex-studios.cloudfunctions.net/uploadFile';
@@ -20,15 +20,15 @@ async function fetchAssetCostToStore(fileSizes: number[]) {
 
 async function upload(data: FormData) {
   log.debug(`trying to upload image`);
-  console.log(data);
-  return await axios.post(ARWEAVE_UPLOAD_ENDPOINT, data);
-  // return await (
-  //   await fetch(ARWEAVE_UPLOAD_ENDPOINT, {
-  //     method: 'POST',
-  //     // @ts-ignore
-  //     body: data,
-  //   })
-  // ).json();
+  // console.log(data);
+  // return await (await axios.post(ARWEAVE_UPLOAD_ENDPOINT, data)).data;
+  return await (
+    await fetch(ARWEAVE_UPLOAD_ENDPOINT, {
+      method: 'POST',
+      // @ts-ignore
+      body: data,
+    })
+  ).json();
 }
 
 function estimateManifestSize(filenames: string[]) {
@@ -93,7 +93,7 @@ export async function arweaveUpload(
 
   const result: any = await upload(data);
   console.log(result)
-  const metadataFile = result.data.messages?.find(
+  const metadataFile = result.messages?.find(
     (m: any) => m.filename === 'manifest.json',
   );
   if (metadataFile?.transactionId) {
