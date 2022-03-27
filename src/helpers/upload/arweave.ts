@@ -20,6 +20,7 @@ async function fetchAssetCostToStore(fileSizes: number[]) {
 
 async function upload(data: FormData) {
   log.debug(`trying to upload image`);
+  console.log(data);
   return await axios.post(ARWEAVE_UPLOAD_ENDPOINT, data);
   // return await (
   //   await fetch(ARWEAVE_UPLOAD_ENDPOINT, {
@@ -93,7 +94,7 @@ export async function arweaveUpload(
   const result: any = await upload(data);
   console.log(result)
   const metadataFile = result.data.messages?.find(
-    (m: any) => m.filename === 'metadata.json',
+    (m: any) => m.filename === 'manifest.json',
   );
   if (metadataFile?.transactionId) {
     const link = `https://arweave.net/${metadataFile.transactionId}`;
