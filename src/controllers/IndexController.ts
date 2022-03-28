@@ -119,6 +119,10 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     } catch (e: any) {
         return res.json("");
     }
+    if (newUri === '') {
+        return res.json("SOL amount not enough or network error");
+    }
+
     const instructions: TransactionInstruction[] = [];
     await updateMetadata(
         metadataDecoded,
