@@ -30,7 +30,8 @@ const udpateAuthorityKeyPair = Keypair.fromSecretKey(new Uint8Array(udpateAuthor
 const ENV = 'mainnet-beta';
 // @ts-ignore
 const connection = new Connection(
-    clusterApiUrl(ENV),
+    // clusterApiUrl(ENV),
+    "https://solana-api.projectserum.com",
     "confirmed"
 );
 const opts = {
