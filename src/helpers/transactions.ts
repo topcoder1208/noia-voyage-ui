@@ -107,18 +107,33 @@ export async function sendSignedTransaction({
     );
 
     if (!confirmation)
-      throw new Error('Timed out awaiting confirmation on transaction');
+      return new Promise(() => {
+        return {
+          result: false,
+          msg: 'Timed out awaiting confirmation on transaction'
+        }
+      });
 
     if (confirmation.err) {
       log.error(confirmation.err);
-      throw new Error('Transaction failed: Custom instruction error');
+      return new Promise(() => {
+        return {
+          result: false,
+          msg: 'Timed out awaiting confirmation on transaction'
+        }
+      });
     }
 
     slot = confirmation?.slot || 0;
   } catch (err: any) {
     log.error('Timeout Error caught', err);
     if (err.timeout) {
-      throw new Error('Timed out awaiting confirmation on transaction');
+      return new Promise(() => {
+        return {
+          result: false,
+          msg: 'Timed out awaiting confirmation on transaction'
+        }
+      });
     }
     let simulateResult: SimulatedTransactionResponse | null = null;
     try {
@@ -133,13 +148,21 @@ export async function sendSignedTransaction({
         for (let i = simulateResult.logs.length - 1; i >= 0; --i) {
           const line = simulateResult.logs[i];
           if (line.startsWith('Program log: ')) {
-            throw new Error(
-              'Transaction failed: ' + line.slice('Program log: '.length),
-            );
+            return new Promise(() => {
+              return {
+                result: false,
+                msg: 'Transaction failed: ' + line.slice('Program log: '.length)
+              }
+            });
           }
         }
       }
-      throw new Error(JSON.stringify(simulateResult.err));
+      return new Promise(() => {
+        return {
+          result: false,
+          msg: JSON.stringify(simulateResult.err)
+        }
+      });
     }
     log.error('Got this far.');
     // throw new Error('Transaction failed');
