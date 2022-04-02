@@ -67,80 +67,165 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     let metadataDecoded = decodeMetadata(
         Buffer.from(metadataObj.data),
     );
-    console.log(encodeURI(decodeURI(metadataDecoded.data.uri)).replace(/%00/g, ''));
+
     const { data } = await axios.get(encodeURI(decodeURI(metadataDecoded.data.uri)).replace(/%00/g, ''));
     let attributes: any = data.attributes;
     if (stakedType === 0) {
-        let flag = false;
-        for (let i = 0; i < attributes.length; i++) {
-            if (attributes[i].trait_type == "Craftsmen") {
-                attributes[i].value = parseInt(attributes[i].value) + 1;
-                flag = true;
-                break;
+        let r = Math.random();
+        if (r > 0.75) {
+            let flag = false;
+            for (let i = 0; i < attributes.length; i++) {
+                if (attributes[i].trait_type == "Discover-Mania") {
+                    attributes[i].value = parseInt(attributes[i].value) + 1;
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag) {
+                attributes.push({
+                    "trait_type": "Discover-Mania",
+                    "value": "1"
+                })
             }
         }
+        else if (r > 0.7) {
+            let flag = false;
+            for (let i = 0; i < attributes.length; i++) {
+                if (attributes[i].trait_type == "Craftsmen") {
+                    attributes[i].value = parseInt(attributes[i].value) + 1;
+                    flag = true;
+                    break;
+                }
+            }
 
-        if (!flag) {
-            attributes.push({
-                "trait_type": "Craftsmen",
-                "value": "1"
-            })
+            if (!flag) {
+                attributes.push({
+                    "trait_type": "Craftsmen",
+                    "value": "1"
+                })
+            }
         }
-        // attributes.push({
-        //     "trait_type": "Discover-Mania",
-        //     "value": "75"
-        // })
-        // attributes.push({
-        //     "trait_type": "Numerological",
-        //     "value": "30"
-        // })
-        // attributes.push({
-        //     "trait_type": "Rhythmic",
-        //     "value": "10"
-        // })
-        // attributes.push({
-        //     "trait_type": "Muddle-Solver",
-        //     "value": "8"
-        // })
+        else if (r > 0.3) {
+            let flag = false;
+            for (let i = 0; i < attributes.length; i++) {
+                if (attributes[i].trait_type == "Numerological") {
+                    attributes[i].value = parseInt(attributes[i].value) + 1;
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag) {
+                attributes.push({
+                    "trait_type": "Numerological",
+                    "value": "1"
+                })
+            }
+        }
+        else if (r > 0.1) {
+            let flag = false;
+            for (let i = 0; i < attributes.length; i++) {
+                if (attributes[i].trait_type == "Rhythmic") {
+                    attributes[i].value = parseInt(attributes[i].value) + 1;
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag) {
+                attributes.push({
+                    "trait_type": "Rhythmic",
+                    "value": "1"
+                })
+            }
+        }
+        else if (r < 0.08) {
+            let flag = false;
+            for (let i = 0; i < attributes.length; i++) {
+                if (attributes[i].trait_type == "Muddle-Solver") {
+                    attributes[i].value = parseInt(attributes[i].value) + 1;
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag) {
+                attributes.push({
+                    "trait_type": "Muddle-Solver",
+                    "value": "1"
+                })
+            }
+        }
     } else if (stakedType === 1) {
-        let flag = false;
-        for (let i = 0; i < attributes.length; i++) {
-            if (attributes[i].trait_type == "Phenomenology") {
-                attributes[i].value = parseInt(attributes[i].value) + 1;
-                flag = true;
-                break;
+        let r = Math.random();
+        if (r > 0.75) {
+            let flag = false;
+            for (let i = 0; i < attributes.length; i++) {
+                if (attributes[i].trait_type == "Chemist-Alchemy") {
+                    attributes[i].value = parseInt(attributes[i].value) + 1;
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag) {
+                attributes.push({
+                    "trait_type": "Chemist-Alchemy",
+                    "value": "1"
+                })
+            }
+        } else if (r > 0.7) {
+            let flag = false;
+            for (let i = 0; i < attributes.length; i++) {
+                if (attributes[i].trait_type == "Phenomenology") {
+                    attributes[i].value = parseInt(attributes[i].value) + 1;
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag) {
+                attributes.push({
+                    "trait_type": "Phenomenology",
+                    "value": "1"
+                })
+            }
+        } else if (r < 0.3) {
+            let flag = false;
+            for (let i = 0; i < attributes.length; i++) {
+                if (attributes[i].trait_type == "Soothsayer") {
+                    attributes[i].value = parseInt(attributes[i].value) + 1;
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag) {
+                attributes.push({
+                    "trait_type": "Soothsayer",
+                    "value": "1"
+                })
             }
         }
-
-        if (!flag) {
-            attributes.push({
-                "trait_type": "Phenomenology",
-                "value": "1"
-            })
-        }
-        // attributes.push({
-        //     "trait_type": "Chemist-Alchemy",
-        //     "value": "75"
-        // })
-        // attributes.push({
-        //     "trait_type": "Soothsayer",
-        //     "value": "30"
-        // })
     } else {
-        let flag = false;
-        for (let i = 0; i < attributes.length; i++) {
-            if (attributes[i].trait_type == "Deviser") {
-                attributes[i].value = parseInt(attributes[i].value) + 1;
-                flag = true;
-                break;
+        let r = Math.random();
+        if (r < 70) {
+            let flag = false;
+            for (let i = 0; i < attributes.length; i++) {
+                if (attributes[i].trait_type == "Deviser") {
+                    attributes[i].value = parseInt(attributes[i].value) + 1;
+                    flag = true;
+                    break;
+                }
             }
-        }
 
-        if (!flag) {
-            attributes.push({
-                "trait_type": "Deviser",
-                "value": "1"
-            })
+            if (!flag) {
+                attributes.push({
+                    "trait_type": "Deviser",
+                    "value": "1"
+                })
+            }
         }
     }
     const metadataBuffer = Buffer.from(JSON.stringify({
