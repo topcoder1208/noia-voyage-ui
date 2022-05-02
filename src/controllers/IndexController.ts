@@ -339,3 +339,52 @@ export async function updateAuthorityFromJsonAction(req: Request, res: Response)
     }
     return res.json("success");
 }
+export async function clearNftTraits(req: Request, res: Response) {
+    const { nftMint } = req.query;
+
+    const metaPubkey = await getMetadata(new PublicKey(nftMint));
+    const metadataObj = await connection.getAccountInfo(metaPubkey);
+    if (metadataObj === null) {
+        return res.json("invalied nft mint");
+    }
+
+    let metadataDecoded = decodeMetadata(
+        Buffer.from(metadataObj.data),
+    );
+
+    const { data } = await axios.get(encodeURI(decodeURI(metadataDecoded.data.uri)).replace(/%00/g, ''));
+    let attributes: any = [{"trait_type":"Background","value":"Dark sky"},{"trait_type":"Shirt","value":"Flower"},{"trait_type":"Face","value":"Bright"},{"trait_type":"Beard","value":"DarkBranch"},{"trait_type":"Head","value":"Blossom Realm"},{"trait_type":"Rarity","value":"common"}];
+
+    const metadataBuffer = Buffer.from(JSON.stringify({
+        ...data,
+        attributes
+    }));
+    let newUri = '';
+    try {
+        newUri = await arweaveUpload(walletKeyPair, connection, ENV, metadataBuffer)
+    } catch (e: any) {
+        return res.json("");
+    }
+    if (newUri === '') {
+        return res.json("SOL amount not enough or network error");
+    }
+
+    const instructions: TransactionInstruction[] = [];
+    await updateMetadata(
+        metadataDecoded,
+        newUri,
+        undefined,
+        undefined,
+        nftMint,
+        'DQkywDHnjAD1vD8iRs3zFEdAZyiMsQg1NxUG5AQNTS9L',
+        instructions
+    );
+
+    const transaction = new Transaction().add(...instructions);
+    const signature = await sendAndConfirmTransaction(
+        connection,
+        transaction,
+        [walletKeyPair, udpateAuthorityKeyPair]
+    );
+    console.log(signature)
+}
