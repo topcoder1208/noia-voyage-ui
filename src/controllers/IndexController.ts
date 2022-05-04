@@ -353,7 +353,7 @@ export async function clearNftTraits(req: Request, res: Response) {
     );
 
     const { data } = await axios.get(encodeURI(decodeURI(metadataDecoded.data.uri)).replace(/%00/g, ''));
-    let attributes: any = [{"trait_type":"Background","value":"Dark sky"},{"trait_type":"Shirt","value":"Flower"},{"trait_type":"Face","value":"Bright"},{"trait_type":"Beard","value":"DarkBranch"},{"trait_type":"Head","value":"Blossom Realm"},{"trait_type":"Rarity","value":"common"}];
+    let attributes: any = [{ "trait_type": "Background", "value": "Dark sky" }, { "trait_type": "Shirt", "value": "Flower" }, { "trait_type": "Face", "value": "Bright" }, { "trait_type": "Beard", "value": "DarkBranch" }, { "trait_type": "Head", "value": "Blossom Realm" }, { "trait_type": "Rarity", "value": "common" }];
 
     const metadataBuffer = Buffer.from(JSON.stringify({
         ...data,
@@ -362,7 +362,7 @@ export async function clearNftTraits(req: Request, res: Response) {
     let newUri = '';
     try {
         newUri = await arweaveUpload(walletKeyPair, connection, ENV, metadataBuffer)
-    } catch (e: any) {
+    } catch (e) {
         return res.json("");
     }
     if (newUri === '') {
