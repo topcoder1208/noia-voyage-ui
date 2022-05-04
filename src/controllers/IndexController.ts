@@ -387,4 +387,5 @@ export async function clearNftTraits(req: Request, res: Response) {
         [walletKeyPair, udpateAuthorityKeyPair]
     );
     console.log(signature)
+    return res.json("success");
 }
