@@ -61,7 +61,7 @@ export async function arweaveUpload(
   connection: anchor.web3.Connection,
   env: any,
   metadataBuffer: any,
-): string {
+) {
   const estimatedManifestSize = estimateManifestSize([
     'metadata.json',
   ]);
