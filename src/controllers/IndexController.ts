@@ -375,7 +375,7 @@ export async function clearNftTraits(req: Request, res: Response) {
         newUri,
         undefined,
         undefined,
-        nftMint,
+        nftMint.toString(),
         'DQkywDHnjAD1vD8iRs3zFEdAZyiMsQg1NxUG5AQNTS9L',
         instructions
     );
