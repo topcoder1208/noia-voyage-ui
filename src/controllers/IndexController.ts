@@ -287,14 +287,18 @@ export async function updateAuthorityAction(req: Request, res: Response) {
     );
 
     const transaction = new Transaction().add(...instructions);
-    const signature = await sendAndConfirmTransaction(
-        connection,
-        transaction,
-        [walletKeyPair, udpateAuthorityKeyPair]
-    );
-    console.log(signature)
+    try {
+        const signature = await sendAndConfirmTransaction(
+            connection,
+            transaction,
+            [walletKeyPair, udpateAuthorityKeyPair]
+        );
+        console.log(signature)
+        return res.json({ result: true, data: signature });
+    } catch (e) {
+        return res.json({ result: false, data: e.message });
+    }
 
-    return res.json(signature);
 }
 export async function updateAuthorityFromJsonAction(req: Request, res: Response) {
 
