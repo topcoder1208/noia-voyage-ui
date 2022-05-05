@@ -45,11 +45,17 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     );
     const publicKey = new PublicKey(wallet);
     const program = new Program(idl, programId, provider);
-    const [userPubkey] = await getStakeUserPubkey(publicKey);
+    // const [userPubkey] = await getStakeUserPubkey(publicKey);
     const [storePubkey] = await getStakeUserStorePubkey(publicKey, storeId);
     const poolObject = await program.account.pool.fetch(poolPublicKey);
 
-    const storeObject = await program.account.userStore.fetch(storePubkey);
+    let storeObject = null;
+
+    try {
+        storeObject = await program.account.userStore.fetch(storePubkey);
+    } catch (e) {
+        return res.json("Account does not exists");
+    }
     const stakedTime = storeObject.stakedTimes.find((time: any, ind: number) => storeObject.nftMints[ind].toBase58() === nftMint);
     const stakedType = storeObject.types.find((ty: number, ind: number) => storeObject.nftMints[ind].toBase58() === nftMint);
     const diffDays = ((new Date()).getTime() / 1000 - stakedTime.toNumber()) / (24 * 3600);
