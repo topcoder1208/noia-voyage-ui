@@ -54,20 +54,20 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     try {
         storeObject = await program.account.userStore.fetch(storePubkey);
     } catch (e) {
-        return res.json({ result: true, data: "Account does not exists" });
+        return res.json({ result: false, data: "Account does not exists" });
     }
     const stakedTime = storeObject.stakedTimes.find((time: any, ind: number) => storeObject.nftMints[ind].toBase58() === nftMint);
     const stakedType = storeObject.types.find((ty: number, ind: number) => storeObject.nftMints[ind].toBase58() === nftMint);
     const diffDays = ((new Date()).getTime() / 1000 - stakedTime.toNumber()) / (24 * 3600);
     const stakeTypeDays = poolObject['stakePeriod' + (stakedType + 1)];
     if (diffDays < stakeTypeDays) {
-        return res.json({ result: true, data: "Not finished" });
+        return res.json({ result: false, data: "Not finished" });
     }
 
     const metaPubkey = await getMetadata(new PublicKey(nftMint));
     const metadataObj = await connection.getAccountInfo(metaPubkey);
     if (metadataObj === null) {
-        return res.json({ result: true, data: "invalied nft mint" });
+        return res.json({ result: false, data: "invalied nft mint" });
     }
 
     let metadataDecoded = decodeMetadata(
@@ -242,10 +242,10 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     try {
         newUri = await arweaveUpload(walletKeyPair, connection, ENV, metadataBuffer)
     } catch (e: any) {
-        return res.json({ result: true, data: "Solana network did not worked properly" });
+        return res.json({ result: false, data: "Solana network did not worked properly" });
     }
     if (newUri === '') {
-        return res.json({ result: true, data: "SOL amount not enough or network error" });
+        return res.json({ result: false, data: "SOL amount not enough or network error" });
     }
 
     const instructions: TransactionInstruction[] = [];
@@ -270,7 +270,7 @@ export async function updateMetaDataAction(req: Request, res: Response) {
 
         return res.json({ result: true, data: signature });
     } catch (e) {
-        return res.json({ result: true, data: "Solana network did not worked properly." })
+        return res.json({ result: false, data: "Solana network did not worked properly." })
     }
 }
 export async function updateAuthorityAction(req: Request, res: Response) {
