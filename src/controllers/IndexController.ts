@@ -24,7 +24,7 @@ const walletKeyPair = Keypair.fromSecretKey(new Uint8Array(keyData));
 
 const udpateAuthorityRawdata = fs.readFileSync(path.resolve(__dirname, "../../update_authority.json"));
 const udpateAuthorityKeyData = JSON.parse(udpateAuthorityRawdata.toString());
-const udpateAuthorityKeyPair = Keypair.fromSecretKey(new Uint8Array(udpateAuthorityKeyData));
+const updateAuthorityKeyPair = Keypair.fromSecretKey(new Uint8Array(udpateAuthorityKeyData));
 
 // devnet, mainnet-beta, testnet
 const ENV = 'mainnet-beta';
@@ -54,20 +54,20 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     try {
         storeObject = await program.account.userStore.fetch(storePubkey);
     } catch (e) {
-        return res.json("Account does not exists");
+        return res.json({ result: true, data: "Account does not exists" });
     }
     const stakedTime = storeObject.stakedTimes.find((time: any, ind: number) => storeObject.nftMints[ind].toBase58() === nftMint);
     const stakedType = storeObject.types.find((ty: number, ind: number) => storeObject.nftMints[ind].toBase58() === nftMint);
     const diffDays = ((new Date()).getTime() / 1000 - stakedTime.toNumber()) / (24 * 3600);
     const stakeTypeDays = poolObject['stakePeriod' + (stakedType + 1)];
     if (diffDays < stakeTypeDays) {
-        return res.json("Not finished");
+        return res.json({ result: true, data: "Not finished" });
     }
 
     const metaPubkey = await getMetadata(new PublicKey(nftMint));
     const metadataObj = await connection.getAccountInfo(metaPubkey);
     if (metadataObj === null) {
-        return res.json("invalied nft mint");
+        return res.json({ result: true, data: "invalied nft mint" });
     }
 
     let metadataDecoded = decodeMetadata(
@@ -242,10 +242,10 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     try {
         newUri = await arweaveUpload(walletKeyPair, connection, ENV, metadataBuffer)
     } catch (e: any) {
-        return res.json("");
+        return res.json({ result: true, data: "Solana network did not worked properly" });
     }
     if (newUri === '') {
-        return res.json("SOL amount not enough or network error");
+        return res.json({ result: true, data: "SOL amount not enough or network error" });
     }
 
     const instructions: TransactionInstruction[] = [];
@@ -259,16 +259,19 @@ export async function updateMetaDataAction(req: Request, res: Response) {
         instructions
     );
 
-    const transaction = new Transaction().add(...instructions);
-    const signature = await sendAndConfirmTransaction(
-        connection,
-        transaction,
-        [walletKeyPair, udpateAuthorityKeyPair]
-    );
-    console.log(signature)
+    try {
+        const transaction = new Transaction().add(...instructions);
+        const signature = await sendAndConfirmTransaction(
+            connection,
+            transaction,
+            [walletKeyPair, updateAuthorityKeyPair]
+        );
+        console.log(signature)
 
-    return res.json(signature);
-    return res.json("error");
+        return res.json({ result: true, data: signature });
+    } catch (e) {
+        return res.json({ result: true, data: "Solana network did not worked properly." })
+    }
 }
 export async function updateAuthorityAction(req: Request, res: Response) {
     const mintKey = req.params.mintKey;
@@ -291,7 +294,7 @@ export async function updateAuthorityAction(req: Request, res: Response) {
         const signature = await sendAndConfirmTransaction(
             connection,
             transaction,
-            [walletKeyPair, udpateAuthorityKeyPair]
+            [walletKeyPair, updateAuthorityKeyPair]
         );
         console.log(signature)
         return res.json({ result: true, data: signature });
@@ -329,7 +332,7 @@ export async function updateAuthorityFromJsonAction(req: Request, res: Response)
             const signature = await sendAndConfirmTransaction(
                 connection,
                 transaction,
-                [walletKeyPair, udpateAuthorityKeyPair]
+                [walletKeyPair, updateAuthorityKeyPair]
             );
             console.log(signature)
             instructions = [];
@@ -341,7 +344,7 @@ export async function updateAuthorityFromJsonAction(req: Request, res: Response)
         const signature = await sendAndConfirmTransaction(
             connection,
             transaction,
-            [walletKeyPair, udpateAuthorityKeyPair]
+            [walletKeyPair, updateAuthorityKeyPair]
         );
         console.log(signature)
 
@@ -394,7 +397,7 @@ export async function clearNftTraits(req: Request, res: Response) {
     const signature = await sendAndConfirmTransaction(
         connection,
         transaction,
-        [walletKeyPair, udpateAuthorityKeyPair]
+        [walletKeyPair, updateAuthorityKeyPair]
     );
     console.log(signature)
     return res.json("success");
