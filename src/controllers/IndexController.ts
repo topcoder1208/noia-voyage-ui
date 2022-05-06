@@ -57,6 +57,9 @@ export async function updateMetaDataAction(req: Request, res: Response) {
         return res.json({ result: false, data: "Account does not exists" });
     }
     const stakedTime = storeObject.stakedTimes.find((time: any, ind: number) => storeObject.nftMints[ind].toBase58() === nftMint);
+    if (!stakedTime) {
+        return res.json({ result: false, data: "Not found staked nft" });
+    }
     const stakedType = storeObject.types.find((ty: number, ind: number) => storeObject.nftMints[ind].toBase58() === nftMint);
     const diffDays = ((new Date()).getTime() / 1000 - stakedTime.toNumber()) / (24 * 3600);
     const stakeTypeDays = poolObject['stakePeriod' + (stakedType + 1)];
