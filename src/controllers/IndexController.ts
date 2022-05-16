@@ -37,6 +37,171 @@ const connection = new Connection(
 const opts = {
     preflightCommitment: "processed" as Commitment
 };
+
+function getBaseTalent (attributes: any) {
+    let r = Math.random();
+    if (r < 0.75) {
+        let flag = false;
+        for (let i = 0; i < attributes.length; i++) {
+            if (attributes[i].trait_type == "Discover-Mania") {
+                attributes[i].value = parseInt(attributes[i].value) + 1;
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag) {
+            attributes.push({
+                "trait_type": "Discover-Mania",
+                "value": "1"
+            })
+        }
+    }
+    else if (r < 0.7) {
+        let flag = false;
+        for (let i = 0; i < attributes.length; i++) {
+            if (attributes[i].trait_type == "Craftsmen") {
+                attributes[i].value = parseInt(attributes[i].value) + 1;
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag) {
+            attributes.push({
+                "trait_type": "Craftsmen",
+                "value": "1"
+            })
+        }
+    }
+    else if (r > 0.3) {
+        let flag = false;
+        for (let i = 0; i < attributes.length; i++) {
+            if (attributes[i].trait_type == "Numerological") {
+                attributes[i].value = parseInt(attributes[i].value) + 1;
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag) {
+            attributes.push({
+                "trait_type": "Numerological",
+                "value": "1"
+            })
+        }
+    }
+    else if (r > 0.1) {
+        let flag = false;
+        for (let i = 0; i < attributes.length; i++) {
+            if (attributes[i].trait_type == "Rhythmic") {
+                attributes[i].value = parseInt(attributes[i].value) + 1;
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag) {
+            attributes.push({
+                "trait_type": "Rhythmic",
+                "value": "1"
+            })
+        }
+    }
+    else if (r < 0.08) {
+        let flag = false;
+        for (let i = 0; i < attributes.length; i++) {
+            if (attributes[i].trait_type == "Muddle-Solver") {
+                attributes[i].value = parseInt(attributes[i].value) + 1;
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag) {
+            attributes.push({
+                "trait_type": "Muddle-Solver",
+                "value": "1"
+            })
+        }
+    }
+
+    return attributes;
+}
+
+function getRareTalent (attributes: any) {
+    let r2 = Math.random();
+    if (r2 > 0.75) {
+        let flag = false;
+        for (let i = 0; i < attributes.length; i++) {
+            if (attributes[i].trait_type == "Chemist-Alchemy") {
+                attributes[i].value = parseInt(attributes[i].value) + 1;
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag) {
+            attributes.push({
+                "trait_type": "Chemist-Alchemy",
+                "value": "1"
+            })
+        }
+    } else if (r2 > 0.7) {
+        let flag = false;
+        for (let i = 0; i < attributes.length; i++) {
+            if (attributes[i].trait_type == "Phenomenology") {
+                attributes[i].value = parseInt(attributes[i].value) + 1;
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag) {
+            attributes.push({
+                "trait_type": "Phenomenology",
+                "value": "1"
+            })
+        }
+    } else if (r2 < 0.3) {
+        let flag = false;
+        for (let i = 0; i < attributes.length; i++) {
+            if (attributes[i].trait_type == "Soothsayer") {
+                attributes[i].value = parseInt(attributes[i].value) + 1;
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag) {
+            attributes.push({
+                "trait_type": "Soothsayer",
+                "value": "1"
+            })
+        }
+    }
+
+    return attributes;
+}
+
+function getGodTalent (attributes: any) {
+    let flag = false;
+    for (let i = 0; i < attributes.length; i++) {
+        if (attributes[i].trait_type == "Deviser") {
+            attributes[i].value = parseInt(attributes[i].value) + 1;
+            flag = true;
+            break;
+        }
+    }
+
+    if (!flag) {
+        attributes.push({
+            "trait_type": "Deviser",
+            "value": "1"
+        })
+    }
+    return attributes;
+}
 export async function updateMetaDataAction(req: Request, res: Response) {
     const { nftMint, wallet, storeId } = req.body;
     const adminWallet = new Wallet(walletKeyPair);
@@ -79,164 +244,60 @@ export async function updateMetaDataAction(req: Request, res: Response) {
 
     const { data } = await axios.get(encodeURI(decodeURI(metadataDecoded.data.uri)).replace(/%00/g, ''));
     let attributes: any = data.attributes;
-    if (stakedType === 0) {
-        let r = Math.random();
-        if (r > 0.75) {
-            let flag = false;
-            for (let i = 0; i < attributes.length; i++) {
-                if (attributes[i].trait_type == "Discover-Mania") {
-                    attributes[i].value = parseInt(attributes[i].value) + 1;
-                    flag = true;
-                    break;
+    const baseTalents = ['Discover-Mania', 'Craftsmen', 'Numerological', 'Rhythmic', 'Muddle-Solver'];
+    const rareTalents = ['Chemist-Alchemy', 'Phenomenology', 'Soothsayer'];
+    const godTalents = ['Deviser'];
+
+    const isContainedBaseTalent = attributes.find((attribute: any) => baseTalents.indexOf(attribute.trait_type) > -1) !== undefined;
+    const isContainedRareTalent = attributes.find((attribute: any) => rareTalents.indexOf(attribute.trait_type) > -1) !== undefined;
+    let r = Math.random();
+    let now = new Date();
+    if (now.getTime() % 2 === 1) {
+        if (stakedType === 2) {
+            if (isContainedRareTalent) {
+                if (r < 0.15) {
+                    attributes = getGodTalent(attributes);
+                }
+            } else if (isContainedBaseTalent) {
+                if (r < 0.5) {
+                    attributes = getRareTalent(attributes);
+                } else if (r < 0.1) {
+                    attributes = getGodTalent(attributes);
+                }
+            } else {
+                if (r < 0.45) {
+                    attributes = getRareTalent(attributes);
+                } else if (r < 0.4) {
+                    attributes = getBaseTalent(attributes);
+                } else if (r < 0.1) {
+                    attributes = getGodTalent(attributes);
                 }
             }
-
-            if (!flag) {
-                attributes.push({
-                    "trait_type": "Discover-Mania",
-                    "value": "1"
-                })
-            }
-        }
-        else if (r > 0.7) {
-            let flag = false;
-            for (let i = 0; i < attributes.length; i++) {
-                if (attributes[i].trait_type == "Craftsmen") {
-                    attributes[i].value = parseInt(attributes[i].value) + 1;
-                    flag = true;
-                    break;
+        } else if (stakedType === 1) {
+            if (isContainedBaseTalent) {
+                if (r < 0.4) {
+                    attributes = getRareTalent(attributes);
+                }
+            } else {
+                if (r < 0.7) {
+                    attributes = getBaseTalent(attributes);
+                } else if (r < 0.2) {
+                    attributes = getRareTalent(attributes);
                 }
             }
-
-            if (!flag) {
-                attributes.push({
-                    "trait_type": "Craftsmen",
-                    "value": "1"
-                })
-            }
-        }
-        else if (r > 0.3) {
-            let flag = false;
-            for (let i = 0; i < attributes.length; i++) {
-                if (attributes[i].trait_type == "Numerological") {
-                    attributes[i].value = parseInt(attributes[i].value) + 1;
-                    flag = true;
-                    break;
+        } else {
+            if (isContainedBaseTalent) {
+                if (r < 0.1) {
+                    attributes = getRareTalent(attributes);
                 }
-            }
-
-            if (!flag) {
-                attributes.push({
-                    "trait_type": "Numerological",
-                    "value": "1"
-                })
-            }
-        }
-        else if (r > 0.1) {
-            let flag = false;
-            for (let i = 0; i < attributes.length; i++) {
-                if (attributes[i].trait_type == "Rhythmic") {
-                    attributes[i].value = parseInt(attributes[i].value) + 1;
-                    flag = true;
-                    break;
+            } else {
+                if (r < 0.8) {
+                    attributes = getBaseTalent(attributes);
                 }
-            }
-
-            if (!flag) {
-                attributes.push({
-                    "trait_type": "Rhythmic",
-                    "value": "1"
-                })
-            }
-        }
-        else if (r < 0.08) {
-            let flag = false;
-            for (let i = 0; i < attributes.length; i++) {
-                if (attributes[i].trait_type == "Muddle-Solver") {
-                    attributes[i].value = parseInt(attributes[i].value) + 1;
-                    flag = true;
-                    break;
-                }
-            }
-
-            if (!flag) {
-                attributes.push({
-                    "trait_type": "Muddle-Solver",
-                    "value": "1"
-                })
-            }
-        }
-    } else if (stakedType === 1) {
-        let r = Math.random();
-        if (r > 0.75) {
-            let flag = false;
-            for (let i = 0; i < attributes.length; i++) {
-                if (attributes[i].trait_type == "Chemist-Alchemy") {
-                    attributes[i].value = parseInt(attributes[i].value) + 1;
-                    flag = true;
-                    break;
-                }
-            }
-
-            if (!flag) {
-                attributes.push({
-                    "trait_type": "Chemist-Alchemy",
-                    "value": "1"
-                })
-            }
-        } else if (r > 0.7) {
-            let flag = false;
-            for (let i = 0; i < attributes.length; i++) {
-                if (attributes[i].trait_type == "Phenomenology") {
-                    attributes[i].value = parseInt(attributes[i].value) + 1;
-                    flag = true;
-                    break;
-                }
-            }
-
-            if (!flag) {
-                attributes.push({
-                    "trait_type": "Phenomenology",
-                    "value": "1"
-                })
-            }
-        } else if (r < 0.3) {
-            let flag = false;
-            for (let i = 0; i < attributes.length; i++) {
-                if (attributes[i].trait_type == "Soothsayer") {
-                    attributes[i].value = parseInt(attributes[i].value) + 1;
-                    flag = true;
-                    break;
-                }
-            }
-
-            if (!flag) {
-                attributes.push({
-                    "trait_type": "Soothsayer",
-                    "value": "1"
-                })
-            }
-        }
-    } else {
-        let r = Math.random();
-        if (r < 70) {
-            let flag = false;
-            for (let i = 0; i < attributes.length; i++) {
-                if (attributes[i].trait_type == "Deviser") {
-                    attributes[i].value = parseInt(attributes[i].value) + 1;
-                    flag = true;
-                    break;
-                }
-            }
-
-            if (!flag) {
-                attributes.push({
-                    "trait_type": "Deviser",
-                    "value": "1"
-                })
             }
         }
     }
+    
     const metadataBuffer = Buffer.from(JSON.stringify({
         ...data,
         attributes
