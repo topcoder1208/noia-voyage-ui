@@ -305,6 +305,7 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     try {
         newUri = await arweaveUpload(walletKeyPair, connection, ENV, metadataBuffer)
     } catch (e: any) {
+        console.log(e)
         return res.json({ result: false, data: "Solana network did not worked properly" });
     }
     if (newUri === '') {

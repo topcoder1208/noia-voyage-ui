@@ -62,6 +62,7 @@ export const sendTransactionWithRetryWithKeypair = async (
     transaction,
     [wallet]
   );
+  console.log(signature)
 
   // const { txid, slot } = await sendSignedTransaction({
   //   connection,
