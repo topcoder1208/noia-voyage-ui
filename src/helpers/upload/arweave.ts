@@ -20,7 +20,7 @@ async function fetchAssetCostToStore(fileSizes: number[]) {
 }
 
 async function upload(data: FormData) {
-  log.debug(`trying to upload image`);
+  console.log(`trying to upload image`);
   // console.log(data);
   // return await (await axios.post(ARWEAVE_UPLOAD_ENDPOINT, data)).data;
   return await (
