@@ -251,8 +251,7 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     const isContainedBaseTalent = attributes.find((attribute: any) => baseTalents.indexOf(attribute.trait_type) > -1) !== undefined;
     const isContainedRareTalent = attributes.find((attribute: any) => rareTalents.indexOf(attribute.trait_type) > -1) !== undefined;
     let r = Math.random();
-    let now = new Date();
-    if (now.getTime() % 2 === 1) {
+    {
         if (stakedType === 2) {
             if (isContainedRareTalent) {
                 if (r < 0.15) {
