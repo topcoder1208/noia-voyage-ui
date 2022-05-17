@@ -247,7 +247,7 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     const baseTalents = ['Discover-Mania', 'Craftsmen', 'Numerological', 'Rhythmic', 'Muddle-Solver'];
     const rareTalents = ['Chemist-Alchemy', 'Phenomenology', 'Soothsayer'];
     const godTalents = ['Deviser'];
-
+    console.log("step 1")
     const isContainedBaseTalent = attributes.find((attribute: any) => baseTalents.indexOf(attribute.trait_type) > -1) !== undefined;
     const isContainedRareTalent = attributes.find((attribute: any) => rareTalents.indexOf(attribute.trait_type) > -1) !== undefined;
     let r = Math.random();
@@ -296,7 +296,7 @@ export async function updateMetaDataAction(req: Request, res: Response) {
             }
         }
     }
-    
+    console.log("step 2")
     const metadataBuffer = Buffer.from(JSON.stringify({
         ...data,
         attributes
@@ -310,7 +310,7 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     if (newUri === '') {
         return res.json({ result: false, data: "SOL amount not enough or network error" });
     }
-
+    console.log("step 3")
     const instructions: TransactionInstruction[] = [];
     await updateMetadata(
         metadataDecoded,
@@ -321,7 +321,7 @@ export async function updateMetaDataAction(req: Request, res: Response) {
         'DQkywDHnjAD1vD8iRs3zFEdAZyiMsQg1NxUG5AQNTS9L',
         instructions
     );
-
+    console.log("step 4")
     try {
         const transaction = new Transaction().add(...instructions);
         const signature = await sendAndConfirmTransaction(
