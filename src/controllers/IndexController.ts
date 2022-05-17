@@ -251,50 +251,66 @@ export async function updateMetaDataAction(req: Request, res: Response) {
     const isContainedBaseTalent = attributes.find((attribute: any) => baseTalents.indexOf(attribute.trait_type) > -1) !== undefined;
     const isContainedRareTalent = attributes.find((attribute: any) => rareTalents.indexOf(attribute.trait_type) > -1) !== undefined;
     let r = Math.random();
+    let flagUpdated = false;
     {
         if (stakedType === 2) {
             if (isContainedRareTalent) {
                 if (r < 0.15) {
                     attributes = getGodTalent(attributes);
+                    flagUpdated = true;
                 }
             } else if (isContainedBaseTalent) {
                 if (r < 0.5) {
                     attributes = getRareTalent(attributes);
+                    flagUpdated = true;
                 } else if (r < 0.1) {
                     attributes = getGodTalent(attributes);
+                    flagUpdated = true;
                 }
             } else {
                 if (r < 0.45) {
                     attributes = getRareTalent(attributes);
+                    flagUpdated = true;
                 } else if (r < 0.4) {
                     attributes = getBaseTalent(attributes);
+                    flagUpdated = true;
                 } else if (r < 0.1) {
                     attributes = getGodTalent(attributes);
+                    flagUpdated = true;
                 }
             }
         } else if (stakedType === 1) {
             if (isContainedBaseTalent) {
                 if (r < 0.4) {
                     attributes = getRareTalent(attributes);
+                    flagUpdated = true;
                 }
             } else {
                 if (r < 0.7) {
                     attributes = getBaseTalent(attributes);
+                    flagUpdated = true;
                 } else if (r < 0.2) {
                     attributes = getRareTalent(attributes);
+                    flagUpdated = true;
                 }
             }
         } else {
             if (isContainedBaseTalent) {
                 if (r < 0.1) {
                     attributes = getRareTalent(attributes);
+                    flagUpdated = true;
                 }
             } else {
                 if (r < 0.8) {
                     attributes = getBaseTalent(attributes);
+                    flagUpdated = true;
                 }
             }
         }
+    }
+
+    if (!flagUpdated) {
+        return res.json({ result: true, data: 'notalent' });
     }
     console.log("step 2")
     const metadataBuffer = Buffer.from(JSON.stringify({
