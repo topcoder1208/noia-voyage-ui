@@ -10,6 +10,7 @@ import {
   Transaction,
   TransactionInstruction,
   TransactionSignature,
+  sendAndConfirmTransaction,
 } from '@solana/web3.js';
 import { getUnixTs, sleep } from './various';
 import { DEFAULT_TIMEOUT } from './constants';
@@ -56,12 +57,18 @@ export const sendTransactionWithRetryWithKeypair = async (
     beforeSend();
   }
 
-  const { txid, slot } = await sendSignedTransaction({
+  var signature = await sendAndConfirmTransaction(
     connection,
-    signedTransaction: transaction,
-  });
+    transaction,
+    [wallet]
+  );
 
-  return { txid, slot };
+  // const { txid, slot } = await sendSignedTransaction({
+  //   connection,
+  //   signedTransaction: transaction,
+  // });
+
+  return { txid: signature, slot: undefined };
 };
 
 export async function sendSignedTransaction({
