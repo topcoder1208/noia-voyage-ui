@@ -13,8 +13,9 @@ const ARWEAVE_UPLOAD_ENDPOINT =
   'https://us-central1-metaplex-studios.cloudfunctions.net/uploadFile';
 
 async function fetchAssetCostToStore(fileSizes: number[]) {
+  console.log("Started fetch asset cost:")
   const result = await calculate(fileSizes);
-  log.debug('Arweave cost estimates:', result);
+  console.log('Arweave cost estimates:', result);
 
   return result.solana * anchor.web3.LAMPORTS_PER_SOL;
 }
